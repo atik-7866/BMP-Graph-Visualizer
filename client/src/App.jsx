@@ -6,9 +6,9 @@ function App() {
 
   return (
     <>
-      <div> Graphify</div>
+      <div className="text-4xl"> Graphify</div>
     </>
   )
 }
-
+  
 export default App
