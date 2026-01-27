@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import {Routes, Route} from 'react-router-dom'
 import HomePage from './pages/HomePage.jsx'
+import BFSSimulation from './pages/BFSSimulation.jsx'
+import NotFound from './pages/NotFound.jsx'
 
 function App() {
 
@@ -8,6 +10,8 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/bfs" element={<BFSSimulation/>} />
+        <Route path="*" element={<NotFound/>} />
       </Routes>
     </>
   )

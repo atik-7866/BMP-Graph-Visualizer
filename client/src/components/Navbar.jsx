@@ -1,7 +1,13 @@
-import { Home, Network, Search } from "lucide-react";
+import { Home, Search } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { useNavigate } from "react-router-dom";
 import Logo from "../assets/Logo.png";
+
+const ALGORITHMS = [
+  { name: "Breadth-First Search (BFS)", route: "/bfs" },
+  { name: "Depth-First Search (DFS)", route: "/dfs" },
+  { name: "Dijkstra's Algorithm", route: "/dijkstra" }
+];
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -12,35 +18,48 @@ export default function Navbar() {
         <div className="flex items-center gap-4">
 
           {/* Logo */}
-          <div className="flex items-center gap-2 shrink-0">
-            <img
-              src={Logo}
-              alt="Graphify Logo"
-              className="h-8 w-auto cursor-pointer"
-              onClick={() => navigate("/")}
-            />
-          </div>
+          <img
+            src={Logo}
+            alt="Graphify Logo"
+            className="h-8 cursor-pointer"
+            onClick={() => navigate("/")}
+          />
 
-          {/* Search + Home */}
-          <div className="flex items-center gap-3 flex-1">
-            <div className="flex items-center gap-2 flex-1 px-4 py-2 rounded-full
-                            border bg-background/60 focus-within:ring-2 focus-within:ring-primary">
-              <Search size = "17" className="text-muted-foreground" />
-              <input
-                placeholder="Search..."
-                className="w-full bg-transparent text-sm focus:outline-none"
-              />
-            </div>
-
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-full"
-              onClick={() => navigate("/")}
+          {/* Algorithms Dropdown */}
+          <details className="relative flex-1">
+            <summary
+              className="flex items-center gap-2 px-4 py-2 rounded-full border
+                         bg-background/60 cursor-pointer list-none"
             >
-              <Home/>
-            </Button>
-          </div>
+              <Search size={17} className="text-muted-foreground" />
+              <span className="text-sm text-muted-foreground">
+                Algorithms
+              </span>
+            </summary>
+
+            <div className="absolute top-full mt-2 w-full bg-background
+                            border rounded-lg shadow-lg overflow-hidden z-50">
+              {ALGORITHMS.map((algo) => (
+                <div
+                  key={algo.route}
+                  className="px-4 py-3 hover:bg-muted cursor-pointer font-medium text-foreground"
+                  onClick={() => navigate(algo.route)}
+                >
+                  {algo.name}
+                </div>
+              ))}
+            </div>
+          </details>
+
+          {/* Home Button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-full"
+            onClick={() => navigate("/")}
+          >
+            <Home />
+          </Button>
 
         </div>
       </div>

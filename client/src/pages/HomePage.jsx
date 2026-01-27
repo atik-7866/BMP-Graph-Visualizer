@@ -7,12 +7,14 @@ import {
   CardTitle,
 } from "../components/ui/card";
 import { ArrowRight, Network, Map, Share2, ShoppingCart } from "lucide-react";
-import GraphAlgorithmIntroductionCard from "../components/GraphAlgorithmIntroductionCard";
+import GraphAlgorithmIntroductionCard from "../components/ui/Cards/GraphAlgorithmIntroductionCard";
 import Waves from "../components/background/Waves";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar.jsx";
 import GraphTypes from "../assets/graphtypes.png";
 
 export default function Home() {
+  const navigate = useNavigate();
   const algorithms = [
     {
       title: "Breadth-First Search (BFS)",
@@ -21,6 +23,7 @@ export default function Home() {
         "Explores all vertices at the present depth before moving to vertices at the next depth level. Perfect for finding shortest paths in unweighted graphs.",
       time: "O(V + E)",
       space: "O(V)",
+      link: "/bfs"
     },
     {
       title: "Depth-First Search (DFS)",
@@ -29,6 +32,7 @@ export default function Home() {
         "Explores as far as possible along each branch before backtracking. Essential for cycle detection, topological sorting, and path finding.",
       time: "O(V + E)",
       space: "O(V)",
+      link: "/dfs"
     },
     {
       title: "Dijkstra's Algorithm",
@@ -37,6 +41,7 @@ export default function Home() {
         "Finds the shortest path between nodes in a weighted graph with non-negative edge weights. The foundation of GPS and routing systems.",
       time: "O((V + E) log V)",
       space: "O(V)",
+      link: "/dijkstra"
     },
     {
       title: "Bellman-Ford Algorithm",
@@ -45,6 +50,7 @@ export default function Home() {
         "Computes shortest paths from a single source even with negative edge weights. Can detect negative cycles in graphs.",
       time: "O(V × E)",
       space: "O(V)",
+      link: "/bellman-ford"
     },
     {
       title: "Kruskal's Algorithm",
@@ -53,6 +59,7 @@ export default function Home() {
         "Finds a minimum spanning tree for a connected weighted graph. Useful for network design and clustering problems.",
       time: "O(E log E)",
       space: "O(V)",
+      link: "/kruskal"
     },
     {
       title: "Prim's Algorithm",
@@ -61,6 +68,7 @@ export default function Home() {
         "Another approach to finding minimum spanning trees, growing the tree one vertex at a time. Efficient for dense graphs.",
       time: "O(E log V)",
       space: "O(V)",
+      link: "/prims"
     },
   ];
 
@@ -246,6 +254,7 @@ export default function Home() {
                   content={algo.content}
                   time={algo.time}
                   space={algo.space}
+                  link={algo.link}
                 />
               ))}
             </div>
