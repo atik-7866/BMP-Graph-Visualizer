@@ -2,26 +2,27 @@ import { useState, useMemo, useRef, useEffect } from "react";
 import { Button } from "../components/ui/button";
 import Navbar from "../components/Navbar";
 import GraphVisualization from "../components/GraphVisualization";
-import BFSExecutor from "../utils/bfs";
+import DFSExecutor  from "../utils/dfs";
 import parseAdjList from "../utils/parseAdjList";
 
 const MAX_NODES = 15;
 const SIMULATION_DELAY = 1000; // milliseconds between steps
 
-export default function BFSSimulation() {
+export default function DFSSimulation() {
   const [input, setInput] = useState("A: B C\nB: A D\nC: A D\nD: B C");
   const adj = useMemo(() => parseAdjList(input), [input]);
   const nodes = useMemo(() => Object.keys(adj), [adj]);
   const [error, setError] = useState("");
 
   const [start, setStart] = useState(nodes[0] || "");
-  const [bfsState, setBfsState] = useState({
-    queue: [],
+  const [dfsState, setDfsState] = useState({
+    recursionStack: [],
     visited: [],
     currentNode: null,
     currentNeighbors: [],
     log: [],
     done: false,
+    backtracking: false,
   });
   const [isSimulating, setIsSimulating] = useState(false);
 
@@ -37,8 +38,8 @@ export default function BFSSimulation() {
     setError("");
     if (nodes.length && !nodes.includes(start)) setStart(nodes[0]);
     stopSimulation();
-    executorRef.current = new BFSExecutor(adj, start);
-    setBfsState(executorRef.current.getState());
+    executorRef.current = new DFSExecutor(adj, start);
+    setDfsState(executorRef.current.getState());
   }, [input]);
 
   // Cleanup simulation on unmount
@@ -56,16 +57,16 @@ export default function BFSSimulation() {
 
   function reset() {
     stopSimulation();
-    executorRef.current = new BFSExecutor(adj, start);
-    setBfsState(executorRef.current.getState());
+    executorRef.current = new DFSExecutor(adj, start);
+    setDfsState(executorRef.current.getState());
   }
 
   function step() {
     if (!executorRef.current) {
-      executorRef.current = new BFSExecutor(adj, start);
+      executorRef.current = new DFSExecutor(adj, start);
     }
     const state = executorRef.current.step();
-    setBfsState(state);
+    setDfsState(state);
     if (state.done) {
       stopSimulation();
     }
@@ -77,15 +78,15 @@ export default function BFSSimulation() {
       return;
     }
 
-    executorRef.current = new BFSExecutor(adj, start);
-    setBfsState(executorRef.current.getState());
+    executorRef.current = new DFSExecutor(adj, start);
+    setDfsState(executorRef.current.getState());
     setIsSimulating(true);
 
     simulationIntervalRef.current = setInterval(() => {
       if (!executorRef.current) return;
       
       const state = executorRef.current.step();
-      setBfsState(state);
+      setDfsState(state);
 
       if (state.done) {
         stopSimulation();
@@ -100,9 +101,9 @@ export default function BFSSimulation() {
       <div className="container mx-auto px-4 py-24">
         <div className="max-w-6xl mx-auto space-y-6">
           <div>
-            <h1 className="text-4xl font-bold text-foreground">BFS Simulator</h1>
+            <h1 className="text-4xl font-bold text-foreground">DFS Simulator</h1>
             <p className="text-muted-foreground mt-2">
-              Visualize Breadth-First Search algorithm step-by-step
+              Visualize Depth-First Search algorithm step-by-step
             </p>
           </div>
 
@@ -156,7 +157,7 @@ export default function BFSSimulation() {
                   <Button onClick={reset} variant="outline" className="flex-1" disabled={isSimulating}>
                     Reset
                   </Button>
-                  <Button onClick={step} variant="outline" className="flex-1" disabled={isSimulating || bfsState.done}>
+                  <Button onClick={step} variant="outline" className="flex-1" disabled={isSimulating || dfsState.done}>
                     Step
                   </Button>
                   <Button 
@@ -171,19 +172,23 @@ export default function BFSSimulation() {
               </div>
 
               <div className="bg-card border border-border rounded-lg p-4">
-                <h4 className="font-semibold mb-2">Queue</h4>
-                <div className="min-h-10 flex items-center gap-2 flex-wrap">
-                  {bfsState.queue.length ? (
-                    bfsState.queue.map((q, i) => (
+                <h4 className="font-semibold mb-2">Recursion Stack</h4>
+                <div className="min-h-10 flex flex-col-reverse gap-2">
+                  {dfsState.recursionStack.length ? (
+                    dfsState.recursionStack.map((node, i) => (
                       <div
-                        key={`${q}-${i}`}
-                        className="px-3 py-1 rounded bg-muted text-sm font-medium"
+                        key={`${node}-${i}`}
+                        className={`px-3 py-1 rounded text-sm font-medium text-center ${
+                          i === dfsState.recursionStack.length - 1
+                            ? "bg-purple-500 text-white border-2 border-purple-600"
+                            : "bg-muted"
+                        }`}
                       >
-                        {q}
+                        {node} {i === dfsState.recursionStack.length - 1 && "(top)"}
                       </div>
                     ))
                   ) : (
-                    <div className="text-sm text-muted-foreground">(empty)</div>
+                    <div className="text-sm text-muted-foreground text-center py-2">(empty)</div>
                   )}
                 </div>
               </div>
@@ -191,13 +196,15 @@ export default function BFSSimulation() {
               <div className="bg-card border border-border rounded-lg p-4">
                 <h4 className="font-semibold mb-2">Execution Log</h4>
                 <div className="max-h-60 overflow-auto text-sm font-mono">
-                  {bfsState.log.length ? (
-                    bfsState.log.map((entry, i) => (
+                  {dfsState.log.length ? (
+                    dfsState.log.map((entry, i) => (
                       <div
                         key={i}
                         className={`py-1 ${
                           entry.startsWith("  →")
                             ? "text-muted-foreground pl-4"
+                            : entry.startsWith("⬅")
+                            ? "text-amber-600 font-semibold"
                             : "text-foreground font-semibold"
                         }`}
                       >
@@ -215,10 +222,10 @@ export default function BFSSimulation() {
             <div>
               <GraphVisualization
                 adjacencyList={adj}
-                visitedNodes={bfsState.visited}
-                queuedNodes={bfsState.queue}
-                currentNode={bfsState.currentNode}
-                currentNeighbors={bfsState.currentNeighbors}
+                visitedNodes={dfsState.visited}
+                queuedNodes={dfsState.recursionStack}
+                currentNode={dfsState.currentNode}
+                currentNeighbors={dfsState.currentNeighbors}
                 width={600}
                 height={500}
               />
