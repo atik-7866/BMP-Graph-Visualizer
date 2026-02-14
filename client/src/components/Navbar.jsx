@@ -6,7 +6,10 @@ import Logo from "../assets/Logo.png";
 const ALGORITHMS = [
   { name: "Breadth-First Search (BFS)", route: "/bfs" },
   { name: "Depth-First Search (DFS)", route: "/dfs" },
-  { name: "Dijkstra's Algorithm", route: "/dijkstra" }
+  { name: "Topological Sort (Kahn's)", route: "/topological-sort" },
+  { name: "Bipartite Graph Check", route: "/bipartite" },
+  { name: "Connected Components", route: "/components" },
+  { name: "Cycle Detection", route: "/cycle-detection" },
 ];
 
 export default function Navbar() {

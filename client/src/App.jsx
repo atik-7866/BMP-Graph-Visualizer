@@ -3,6 +3,10 @@ import {Routes, Route} from 'react-router-dom'
 import HomePage from './pages/HomePage.jsx'
 import BFSSimulation from './pages/BFSSimulation.jsx'
 import DFSSimulation from './pages/DFSSimulation.jsx'
+import TopologicalSort from './pages/TopologicalSort.jsx'
+import BipartiteSimulation from './pages/BipartiteSimulation.jsx'
+import ComponentsSimulation from './pages/ComponentsSimulation.jsx'
+import CycleDetectionSimulation from './pages/CycleDetectionSimulation.jsx'
 import NotFound from './pages/NotFound.jsx'
 
 function App() {
@@ -13,6 +17,10 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/bfs" element={<BFSSimulation/>} />
         <Route path="/dfs" element={<DFSSimulation/>} />
+        <Route path="/topological-sort" element={<TopologicalSort/>} />
+        <Route path="/bipartite" element={<BipartiteSimulation/>} />
+        <Route path="/components" element={<ComponentsSimulation/>} />
+        <Route path="/cycle-detection" element={<CycleDetectionSimulation/>} />
         <Route path="*" element={<NotFound/>} />
       </Routes>
     </>

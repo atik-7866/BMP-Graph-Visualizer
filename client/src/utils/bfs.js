@@ -10,7 +10,7 @@ export default class BFSExecutor {
     this.done = false;
   }
 
-  
+
   step() {
     if (this.done || this.queue.length === 0) {
       this.done = true;
@@ -58,7 +58,7 @@ export default class BFSExecutor {
     };
   }
 
- 
+
   reset(startNode) {
     this.queue = startNode ? [startNode] : [];
     this.visited = new Set();
