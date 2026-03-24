@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar";
 import GraphVisualization from "../components/GraphVisualization";
 import PrimsExecutor from "../utils/prims";
 import parseWeightedAdjList from "../utils/parseWeightedAdjList";
+import countMSTs from "../utils/countMSTs";
 
 const MAX_NODES = 15;
 const SIMULATION_DELAY = 1500; // milliseconds between steps
@@ -26,6 +27,7 @@ export default function PrimsSimulation() {
     done: false,
   });
   const [isSimulating, setIsSimulating] = useState(false);
+  const [mstCountResult, setMstCountResult] = useState(null);
 
   const executorRef = useRef(null);
   const simulationIntervalRef = useRef(null);
@@ -41,6 +43,7 @@ export default function PrimsSimulation() {
     stopSimulation();
     executorRef.current = new PrimsExecutor(adj, start);
     setPrimsState(executorRef.current.getState());
+    setMstCountResult(null);
   }, [input]);
 
   // Cleanup simulation on unmount
@@ -60,6 +63,23 @@ export default function PrimsSimulation() {
     stopSimulation();
     executorRef.current = new PrimsExecutor(adj, start);
     setPrimsState(executorRef.current.getState());
+  }
+
+  function handleCountMSTs() {
+    try {
+      const result = countMSTs(adj);
+      setMstCountResult({
+        count: result.count.toString(),
+        isConnected: result.isConnected,
+        message: result.message,
+      });
+    } catch (e) {
+      setMstCountResult({
+        count: "0",
+        isConnected: false,
+        message: "Failed to compute MST count. Please check graph input.",
+      });
+    }
   }
 
   function step() {
@@ -170,7 +190,25 @@ export default function PrimsSimulation() {
                     {isSimulating ? "Stop" : "Start Simulation"}
                   </Button>
                 </div>
+                <Button
+                  onClick={handleCountMSTs}
+                  variant="secondary"
+                  className="w-full mt-3"
+                  disabled={!!error}
+                >
+                  Count Total MSTs
+                </Button>
               </div>
+
+              {mstCountResult && (
+                <div className="bg-card border border-border rounded-lg p-4">
+                  <h4 className="font-semibold mb-2">Number of Minimum Spanning Trees</h4>
+                  <p className="text-2xl font-bold text-primary">{mstCountResult.count}</p>
+                  <p className={`text-sm mt-2 ${mstCountResult.isConnected ? "text-muted-foreground" : "text-red-500"}`}>
+                    {mstCountResult.message}
+                  </p>
+                </div>
+              )}
 
               {/* Priority Queue (Edges) */}
               <div className="bg-card border border-border rounded-lg p-4">

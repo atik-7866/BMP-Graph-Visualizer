@@ -12,6 +12,7 @@ import BellmanFordSimulation from './pages/BellmanFordSimulation.jsx'
 import FloydWarshallSimulation from './pages/FloydWarshallSimulation.jsx'
 import PrimsSimulation from './pages/PrimsSimulation.jsx'
 import KruskalsSimulation from './pages/KruskalsSimulation.jsx'
+import FordFulkersonSimulation from './pages/FordFulkersonSimulation.jsx'
 import NotFound from './pages/NotFound.jsx'
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
         <Route path="/dijkstra" element={<DijkstraSimulation/>} />
         <Route path="/bellman-ford" element={<BellmanFordSimulation/>} />
         <Route path="/floyd-warshall" element={<FloydWarshallSimulation/>} />
+        <Route path="/ford-fulkerson" element={<FordFulkersonSimulation/>} />
         <Route path="/prims" element={<PrimsSimulation/>} />
         <Route path="/kruskals" element={<KruskalsSimulation/>} />
         <Route path="*" element={<NotFound/>} />
